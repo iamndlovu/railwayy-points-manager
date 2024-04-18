@@ -1,0 +1,30 @@
+@import '../../assets/theme/variables.scss';
+
+.appHeader {
+  background-image: url('../../assets/images/welcome-bg.webp');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  background-clip: border-box;
+
+  .container {
+    background-color: rgba($color: $primary-background, $alpha: 0.8);
+    height: 100vh;
+    font-size: calc(10px + 2vmin);
+    color: $primary-color;
+
+    .appName {
+      font-size: 5rem;
+      line-height: 1.2;
+    }
+
+    .appCta {
+      width: 50%;
+      margin-top: 5rem;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      justify-self: center;
+    }
+  }
+}
