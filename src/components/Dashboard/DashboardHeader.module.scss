@@ -1,0 +1,25 @@
+@import '../../assets/theme/variables.scss';
+
+.dashHeader {
+  height: $header-height;
+  padding: 0 1rem;
+  background-color: $primary-background;
+  color: $primary-color;
+  font-family: 'Times New Roman', Times, serif;
+
+  .headerContainer {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+
+    .userSection {
+      color: $secondary-background;
+      z-index: 10;
+      text-align: right;
+
+      .action {
+        margin-top: 1rem;
+      }
+    }
+  }
+}
