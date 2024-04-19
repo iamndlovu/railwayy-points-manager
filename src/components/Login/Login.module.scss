@@ -1,0 +1,16 @@
+@import '../../assets/theme/variables.scss';
+
+.Login {
+  background-color: rgba($color: $primary-color, $alpha: 0.7);
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  transition: all 0.5s ease-out;
+
+  &.hide {
+    transform: translateY(-200%);
+  }
+}
