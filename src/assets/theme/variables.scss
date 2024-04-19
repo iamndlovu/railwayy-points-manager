@@ -4,3 +4,23 @@ $secondary-background: white;
 $secondary-color: #333;
 $link-color: #61dafb;
 $header-height: 6rem;
+
+@keyframes warningBlink {
+  0% {
+    background-color: yellow;
+  }
+
+  100% {
+    background-color: green;
+  }
+}
+
+@keyframes dangerBlink {
+  0% {
+    background-color: transparent;
+  }
+
+  100% {
+    background-color: red;
+  }
+}

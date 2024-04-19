@@ -15,16 +15,21 @@ const Dashboard = ({ user, handler }) => {
           </div>
           <div className={`section-container center`}>
             <article>
-              <table className={`article-container`}>
-                <thead className={`article-header`}>
-                  <tr>
-                    <h3>Point A</h3>
+              <table className={`article-container center column`}>
+                <thead className={`article-header center column`}>
+                  <tr className={`center column`}>
+                    <td className='text-center'>
+                      <h3>Point A</h3>
+                    </td>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
                     <td>Status:</td>
-                    <td>Securely Aligned{/* in mootion / stuck */}</td>
+                    <td>
+                      <span>Securely Aligned</span>
+                      <span className={`box safe`}></span>
+                    </td>
                   </tr>
                   <tr>
                     <td>Safe Route:</td>
@@ -42,16 +47,21 @@ const Dashboard = ({ user, handler }) => {
             </article>
 
             <article>
-              <table className={`article-container`}>
-                <thead className={`article-header`}>
-                  <tr>
-                    <h3>Point B</h3>
+              <table className={`article-container center column`}>
+                <thead className={`article-header center column`}>
+                  <tr className={`center column`}>
+                    <td className='text-center'>
+                      <h3>Point B</h3>
+                    </td>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
                     <td>Status:</td>
-                    <td>Securely Aligned{/* in mootion / stuck */}</td>
+                    <td>
+                      <span>In Motion</span>
+                      <span className={`box warning`}></span>
+                    </td>
                   </tr>
                   <tr>
                     <td>Safe Route:</td>
@@ -69,16 +79,21 @@ const Dashboard = ({ user, handler }) => {
             </article>
 
             <article>
-              <table className={`article-container`}>
-                <thead className={`article-header`}>
-                  <tr>
-                    <h3>Point C</h3>
+              <table className={`article-container center column`}>
+                <thead className={`article-header center column`}>
+                  <tr className={`center column`}>
+                    <td className='text-center'>
+                      <h3>Point C</h3>
+                    </td>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
                     <td>Status:</td>
-                    <td>Securely Aligned{/* in mootion / stuck */}</td>
+                    <td>
+                      <span>Misaligned</span>
+                      <span className={`box danger`}></span>
+                    </td>
                   </tr>
                   <tr>
                     <td>Safe Route:</td>
