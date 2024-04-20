@@ -104,6 +104,7 @@ a {
 
       .article-container {
         color: #efefef;
+        text-transform: capitalize;
 
         .article-header {
           color: $primary-color;
@@ -137,7 +138,7 @@ a {
               margin: 0;
             }
 
-            &:first-child > td:nth-child(2) {
+            & > td:nth-child(2) {
               display: flex;
               justify-content: space-between;
             }
