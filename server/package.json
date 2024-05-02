@@ -1,0 +1,9 @@
+{
+  "name": "railway-points-manager_server",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "node index",
+    "dev": "nodemon index"
+  }
+}
