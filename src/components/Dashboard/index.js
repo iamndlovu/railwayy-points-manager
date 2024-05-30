@@ -1,4 +1,5 @@
-import React from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import DashboardHeader from './DashboardHeader';
 import ReportCard from '../ReportCard';
 import styles from './Dashboard.module.scss';
@@ -20,36 +21,24 @@ const Dashboard = ({ user, handler }) => {
    *                                                                              *
    ********************************************************************************/
 
-  // from DB
-  const pointsData = [
-    {
-      pointName: 'point a',
-      status: 0,
-      routes: ['station a - station b', 'station a - point b', 'none'],
-      safeRoute: 0,
-      lastFault: new Date().toLocaleString(),
-      timeToFault: 1,
-      changeTime: 10,
-    },
-    {
-      pointName: 'point b',
-      status: 1,
-      routes: ['point a - station c', 'point a - point c', 'none'],
-      safeRoute: 3,
-      lastFault: new Date().toLocaleString(),
-      timeToFault: 2,
-      changeTime: 3,
-    },
-    {
-      pointName: 'point c',
-      status: 2,
-      routes: ['point b - station d', 'point b - station e', 'none'],
-      safeRoute: 3,
-      lastFault: new Date().toLocaleString(),
-      timeToFault: 0,
-      changeTime: 6,
-    },
-  ];
+  const [pointsData, setPointsData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const dataRes = await axios.get('http://localhost:5000/point');
+        setPointsData(dataRes.data);
+      } catch (err) {
+        console.error(`Failed to fetch data from server:\n\t\t${err}`);
+      }
+    };
+
+    const fetchDataPeriodically = setInterval(() => fetchData(), 2000);
+
+    return () => {
+      clearInterval(fetchDataPeriodically);
+    };
+  }, []);
 
   //actual code starts here
   return (
@@ -62,9 +51,42 @@ const Dashboard = ({ user, handler }) => {
           <div className={`section-header`}>
             <h2>Points Status</h2>
           </div>
-          <div className={`section-container center`}>
+          <div
+            className={`section-container center`}
+            style={{ position: 'relative' }}
+          >
+            {pointsData.length > 0 &&
+              pointsData[0].status === 0 &&
+              pointsData[0].safeRoute < 2 && (
+                <button
+                  onClick={() => {
+                    let data = 0;
+                    if (pointsData[0].safeRoute === 0) data = 1;
+                    else if (pointsData[0].safeRoute === 1) data = 0;
+
+                    axios
+                      .post('http://localhost:5000/point/direction', { data })
+                      .then((res) => console.log(res.data));
+                  }}
+                  style={{
+                    position: 'absolute',
+                    left: '22.8rem',
+                    top: '10.75rem',
+                    cursor: 'pointer',
+                  }}
+                >
+                  {'< >'}
+                </button>
+              )}
             {pointsData.map(
-              ({ pointName, status, routes = [], safeRoute, lastFault }) => {
+              ({
+                pointName,
+                status,
+                routes = [],
+                safeRoute,
+                lastFault,
+                _id,
+              }) => {
                 let statusValue, indicator, route;
                 switch (status) {
                   case 0:
@@ -89,6 +111,17 @@ const Dashboard = ({ user, handler }) => {
                     break;
                 }
 
+                if (!lastFault) {
+                  if (status === 2) {
+                    lastFault = new Date().toLocaleString();
+                    axios.post(`http://localhost:5000/point/add-fault/${_id}`, {
+                      data: lastFault,
+                    });
+                  } else {
+                    lastFault = 'N/A';
+                  }
+                } else lastFault = new Date(lastFault).toLocaleString();
+
                 return (
                   <ReportCard
                     data={{
@@ -103,10 +136,16 @@ const Dashboard = ({ user, handler }) => {
                           key: 'safe route',
                           value: routes[route] ? routes[route] : 'unknown',
                           indicator: route > 1 ? 'box danger' : undefined,
+                          toggle:
+                            route < 2 && pointName.toLowerCase() === 'point a',
+                          toggleVals: [0, 1],
+                          toggleCurrent: [0, 1].indexOf(route),
+                          toggleUrl: 'http://localhost:5000/point/direction',
                         },
                         { key: 'last fault', value: lastFault },
                       ],
                     }}
+                    key={_id}
                   />
                 );
               }
@@ -125,9 +164,24 @@ const Dashboard = ({ user, handler }) => {
             {(() => {
               let tableItems = [];
 
-              pointsData.forEach(({ pointName, timeToFault }) => {
+              pointsData.forEach(({ pointName, changeTimes }) => {
                 let timeToFaultValue = '',
+                  timeToFault = 7,
                   indicator = '';
+                const changeTime = Number(
+                  (
+                    changeTimes.reduce((a, b) => a + b, 0) / changeTimes.length
+                  ).toFixed(1)
+                );
+
+                if (changeTime >= 11 || changeTime <= 2) timeToFault = 2;
+                else if (
+                  (changeTime > 2 && changeTime < 6) ||
+                  (changeTime > 8 && changeTime < 11)
+                )
+                  timeToFault = 1;
+                else timeToFault = 0;
+
                 switch (timeToFault) {
                   case 0:
                     timeToFaultValue = '> 4 months';
@@ -169,12 +223,19 @@ const Dashboard = ({ user, handler }) => {
             {(() => {
               let tableItems = [];
 
-              pointsData.forEach(({ pointName, changeTime }) => {
+              pointsData.forEach(({ pointName, changeTimes }) => {
                 let indicator = '';
-
-                if (changeTime >= 10 || changeTime <= 0.5)
+                const changeTime = Number(
+                  (
+                    changeTimes.reduce((a, b) => a + b, 0) / changeTimes.length
+                  ).toFixed(1)
+                );
+                if (changeTime >= 11 || changeTime <= 2)
                   indicator = 'box danger';
-                else if (changeTime >= 5 && changeTime < 10)
+                else if (
+                  (changeTime > 2 && changeTime < 6) ||
+                  (changeTime > 8 && changeTime < 11)
+                )
                   indicator = 'box warning';
                 else indicator = 'box safe';
 
@@ -186,7 +247,7 @@ const Dashboard = ({ user, handler }) => {
               });
 
               const data = {
-                header: 'current change time',
+                header: 'average change time',
                 tableItems,
               };
 

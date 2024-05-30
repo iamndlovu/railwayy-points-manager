@@ -31,11 +31,7 @@ try {
 
 // Import and use routes
 app.use('/users', require('./routes/api/users'));
-// app.use('/files', require('./routes/api/files'));
-// app.use('/commits', require('./routes/api/commits'));
-// app.use('/push', require('./routes/api/push'));
-// app.use('/activities', require('./routes/api/activity'));
-// app.use('/categories', require('./routes/api/category'));
+app.use('/point', require('./routes/api/point'));
 
 // Static folder
 app.use(express.static(path.join(__dirname, 'public')));
